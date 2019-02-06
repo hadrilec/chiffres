@@ -1,0 +1,73 @@
+
+R version 3.4.1 (2017-06-30) -- "Single Candle"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R est un logiciel libre livré sans AUCUNE GARANTIE.
+Vous pouvez le redistribuer sous certaines conditions.
+Tapez 'license()' ou 'licence()' pour plus de détails.
+
+R est un projet collaboratif avec de nombreux contributeurs.
+Tapez 'contributors()' pour plus d'information et
+'citation()' pour la façon de le citer dans les publications.
+
+Tapez 'demo()' pour des démonstrations, 'help()' pour l'aide
+en ligne ou 'help.start()' pour obtenir l'aide au format HTML.
+Tapez 'q()' pour quitter R.
+
+> require(shiny)
+Le chargement a nécessité le package : shiny
+> 
+> shiny::runApp('N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/Rshiny chiffres de la note', launch.browser=TRUE)
+
+Listening on http://127.0.0.1:4801
+Warning in readChar(con, 5L, useBytes = TRUE) :
+  impossible d'ouvrir le fichier compressé 'N:/GDESE/O-GDESE/Special/Special.GFou/Sorties/syntheseGFOU//', cause probable : 'Invalid argument'
+Warning: Error in readChar: impossible d'ouvrir la connexion
+Stack trace (innermost first):
+    92: readChar
+    91: load
+    90: charge
+    89: window
+    88: evol
+    87: window
+    86: formatC
+    85: fonc_trim
+    84: paste
+    83: paste
+    82: f_row
+    81: tabl_prod
+    80: renderText [N:\GDCJ\N-GDCJ\Echanges.DCJ\DSC\Rshiny chiffres de la note/app.R#110]
+    79: func
+    78: origRenderFunc
+    77: output$table
+     1: shiny::runApp
+Warning: Error in ga: impossible de trouver la fonction "ga"
+Stack trace (innermost first):
+    87: window
+    86: formatC
+    85: fonc_trim
+    84: paste
+    83: paste
+    82: f_row
+    81: tabl_ze
+    80: renderText [N:\GDCJ\N-GDCJ\Echanges.DCJ\DSC\Rshiny chiffres de la note/app.R#138]
+    79: func
+    78: origRenderFunc
+    77: output$table_int
+     1: shiny::runApp
+Warning: Error in ga: impossible de trouver la fonction "ga"
+Stack trace (innermost first):
+    87: window
+    86: formatC
+    85: fonc_trim
+    84: paste
+    83: paste
+    82: f_row
+    81: tabl_ze
+    80: renderText [N:\GDCJ\N-GDCJ\Echanges.DCJ\DSC\Rshiny chiffres de la note/app.R#138]
+    79: func
+    78: origRenderFunc
+    77: output$table_int
+     1: shiny::runApp
+

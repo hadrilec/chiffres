@@ -1,0 +1,25 @@
+tabl_rev<-function(dig=1){
+  charge<<-function(file,acharger=NULL){load(file)
+    if (acharger %in% rownames(table_noteRch)) return(ts(table_noteRch[acharger,],start=c(as.numeric(substr(names(table_noteRch[acharger,])[1],1,4)),as.numeric(substr(names(table_noteRch[acharger,])[1],6,6))),frequency=4))
+    else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(rownames(table_noteRch))),sep=" "))
+    
+  }
+  row1 <-  ligne_date()
+  row2 <-f_row("<b>Revenu disponible brut (RDB)</b>","b6_s14_3",VT,VA,b_fr,b_fr_old,dig=dig)
+  row3 <-f_row("Masse salariale brute","d11_s14r_3",VT,VA,b_fr,b_fr_old,dig=dig)
+  row4 <-f_row("EBE des entrepreneurs individuels","b2_s14a_3",VT,VA,b_fr,b_fr_old,dig=dig)
+  row5 <-f_row("Prestations sociales en espece","d62_s14r_3",VT,VA,b_fr,b_fr_old,dig=dig)
+row6 <-f_row("EBE des menages purs","b2_s14b_3",VT,VA,b_fr,b_fr_old,dig=dig)
+row7 <-f_row("Revenus de la propriete","d4_s14s_3",VT,VA,b_fr,b_fr_old,dig=dig)
+row8 <-f_row("Cotisations des menages","d613z_s14e_3",VT,VA,b_fr,b_fr_old,dig=dig)
+row9 <-f_row("Impots sur le revenu et le patrimoine","d5_s14e_3",VT,VA,b_fr,b_fr_old,dig=dig)
+row10 <-f_row("<b>Prix de la consommation des menages</b>","p3m_d_9ch",VT,VA,b_fr,b_fr_old,dig=dig)
+row11 <-f_row("<b>Pouvoir d'achat du RDB</b>","pardb_men",VT,VA,b_fr,b_fr_old,dig=dig)
+tabl<-paste("<h1>Revenu des menages</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,"</table>",sep="")
+tabl2<-gsub("&nbsp;%","",tabl)
+tabl3<-gsub("\\+","",tabl2)
+tabl4<-gsub("\\**","",tabl3)
+tabl5<-gsub(">~~","><s>",tabl4)
+tabl6<-gsub("~~","</s>",tabl5)
+#kable(cbind(tabl3,tabl_an3),"html")%>%kable_styling(full_width = T)%>%column_spec(11,border_right = T)%>%add_header_above(c(" ", "Trimestrielles" = 10, "Annuelles" = 3))
+return(tabl6)}
