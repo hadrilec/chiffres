@@ -24,7 +24,7 @@ ui <- fluidPage(tabsetPanel(
         selectInput(
           "tableau",
           "Tableau",
-          c("Fiche Production", "Fiche Investissement", "Fiche Revenu","Fiche Echanges exterieurs","Fiche Consommation et investissement des menages"),
+          c("Fiche Production", "Fiche Investissement", "Fiche Revenu","Fiche Echanges exterieurs","Fiche Consommation et investissement des menages","Fiche PIB France"),
           multiple = F,
           selectize = T
         ),
@@ -36,7 +36,7 @@ ui <- fluidPage(tabsetPanel(
       ),
       
       # Show a plot of the generated distribution
-      mainPanel("Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O:special/special.gfou",htmlOutput("table"))    )
+      mainPanel("Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou",htmlOutput("table"))    )
   ),
   tabPanel(
     "Fiches Internationales",titlePanel("Chiffres de la Note"),
@@ -93,6 +93,7 @@ server <- function(input, output) {
   source(file="tabl_rev.R")
   source(file="tabl_comext.R")
   source(file="tabl_conso.R")
+  source(file="tabl_pibfr.R")
   ifelse(####choix automatique du dernier trimestre du tableau, si mois de novembre/decembre on change d'annee
     month(Sys.Date() ) %in% 11:12,
     trim <<-
@@ -120,7 +121,8 @@ server <- function(input, output) {
        "Fiche Investissement" = tabl_inv(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Revenu" = tabl_rev(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Echanges exterieurs" = tabl_comext(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche Consommation et investissement des menages"= tabl_conso(dig = ifelse(input$digi_fr, 2, 1))
+       "Fiche Consommation et investissement des menages"= tabl_conso(dig = ifelse(input$digi_fr, 2, 1)),
+       "Fiche PIB France"=tabl_pibfr(dig = ifelse(input$digi_fr, 2, 1))
      )
      
    })
