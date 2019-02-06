@@ -79,8 +79,10 @@ f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,ba
   if(is.null(base_old)){base_old<-base}
   if(is.null(base_an_old)){base_an_old<-base_an}
  
+#"<td style=\"border-left: 3px #111111 solid;\">"
+    
   return(paste(ifelse(bold,"<tr style=\"font-weight:bold\">","<tr>"),
-    "<td>",titre,"</td><td>",
+    "<td>",titre,"</td>",
     paste(c(
       fonc_trim(base,base_old, ts_trim, -9,dig=dig),
       fonc_trim(base,base_old, ts_trim, -8,dig=dig),
@@ -88,15 +90,14 @@ f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,ba
       fonc_trim(base,base_old, ts_trim, -6,dig=dig),
       fonc_trim(base,base_old, ts_trim, -5,dig=dig),
       fonc_trim(base,base_old, ts_trim, -4,dig=dig),
-      fonc_trim(base,base_old, ts_trim, -3,dig=dig)), collapse = "</td><td>"),"</td><td style=\"background-color:silver\">",paste(c(
-        fonc_trim(base,base_old, ts_trim, -2,dig=dig),
-        fonc_trim(base,base_old, ts_trim, -1,dig=dig),
-        fonc_trim(base,base_old, ts_trim,dig=dig)), collapse = "</td><td style=\"background-color:silver\">"),
-    "</td><td style=\"border-left: 3px #111111 solid;\">",
-    fonc_an(base_an,base_an_old, ts_an, -2,dig=dig),"</td><td style=\"background-color:silver\">",
-    fonc_an(base_an,base_an_old, ts_an,-1,dig=dig),"</td><td style=\"background-color:silver\">",
-    fonc_an(base_an,base_an_old, ts_an,dig=dig),
-    "</td></tr>",
+      fonc_trim(base,base_old, ts_trim, -3,dig=dig), 
+      fonc_trim(base,base_old, ts_trim, -2,dig=dig),
+      fonc_trim(base,base_old, ts_trim, -1,dig=dig,prev=T),
+      fonc_trim(base,base_old, ts_trim,dig=dig,prev=T),
+      fonc_an(base_an,base_an_old, ts_an, -2,dig=dig),
+      fonc_an(base_an,base_an_old, ts_an, -1,dig=dig),
+      fonc_an(base_an,base_an_old, ts_an,dig=dig,prev=T)), collapse = ""),
+    "</tr>",
     sep = ""
   ))
   
@@ -131,71 +132,37 @@ version<-function(i,i_old=NULL){
   } else paste("**Pour",i,"Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12),"**")
   }
 
-VT<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
+VT<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   new<-formatC(window(round(evol(charge(rdata,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
   if(!is.null(rdata_old)){
   old<-formatC(window(round(evol(charge(rdata_old,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)), format='f', digits=dig )}
   else {old<-new}
   # if(sgn==T){if(new>0) {new=abs(new)
   # old=abs(old)}}
-  affiche(new,old,sgn,pct)
+  affiche(new,old,prev=prev)
   }
 
 
-affiche <- function(new, old, sgn,pct)
+affiche <- function(new, old,prev=F)
 {
-  sg <- ""
-  sg_o <- ""
- sg_pct<-""
-  if (substring(new, 1, 1) != "-" && sgn) {
-    sg <- "+"
-  }
-  if (substring(old, 1, 1) != "-" && sgn) {
-    sg_o <- "+"
-  }
-  if (substring(new, 1, 1) == "-" && sgn) {
-    sg <- "-"
-    new <- substring(new, 2)
-  }
-  if (substring(old, 1, 1) == "-" && sgn) {
-    sg_o <- "-"
-    old <- substring(old, 2)
-  }
-  if (substring(new, 1, 1) == "-" && !sgn) {
-    new <- substring(new, 2)
-  }
-  if (substring(old, 1, 1) == "-" && !sgn) {
-    old <- substring(old, 2)
-  }
 
-  if (exists("excel")) {###pour ecrire dans un Excel directement
-   
-      paste( sg, sub("\\.", "\\,", new), sep = "")
-    
-  }
-  else {
-	if(pct)sg_pct<-"&nbsp;%"
     if (old != new) {
-      paste(
-        "~~",
-        sg_o,
+      paste(ifelse(prev,"<td style=\"background-color:silver\">","<td>"),
+        "<s>",
         sub("\\.", "\\,", old),
-        "~~ ",
-        "**",
-        sg,
-        sub("\\.", "\\,", new),
-        sg_pct,"**",
+        "</s> ",
+        sub("\\.", "\\,", new),"</td>",
         sep = ""
       )
     } else {
-      paste("**", sg, sub("\\.", "\\,", new), sg_pct,"**", sep = "")
+      paste(ifelse(prev,"<td style=\"background-color:silver\">","<td>"), sub("\\.", "\\,", new),"</td>", sep = "")
     }
-  }
+  
 }
 
 
 
-VA<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
+VA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   new<-formatC(window(round(evol(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
@@ -204,9 +171,9 @@ VA<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
   }
   # if(sgn==T){if(new>0) {new=abs(new)
   # old=abs(old)}}
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
 
-GA<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
+GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   freq<-frequency(charge(rdata,ts))
   if(freq==4){pt=trim+c(0,n)}else{pt=n}
   new<-formatC(window(round(ga(charge(rdata,ts))*100,digits=dig),start=pt,end=pt),format='f',digits=dig)
@@ -215,9 +182,9 @@ GA<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
   old<-formatC(window(round(ga(charge(rdata_old,ts))*100,digits=dig),start=pt,end=pt), format='f', digits=dig )}
   else {old<-new
   }
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
 
-GA_A<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
+GA_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
 
   new<-formatC(window(round(ga(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
@@ -225,33 +192,33 @@ GA_A<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
     old<-formatC(window(round(ga(moyenne2(charge(rdata_old,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
   else {old<-new
   }
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
 
 
 
-NIV<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){
+NIV<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   new<-formatC(window(round(charge(rdata,ts),digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
   old<-formatC(window(round(charge(rdata_old,ts),digits=dig),start=trim+c(0,n),end=trim+c(0,n)), format='f', digits=dig )}
   else {old<-new
   }
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
 
-NIV_A<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){##fait la moyenne d'une grandeur trimestrielle
+NIV_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##fait la moyenne d'une grandeur trimestrielle
   new<-formatC(window(round(moyenne2(charge(rdata,ts),"a"),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
   old<-formatC(window(round(moyenne2(charge(rdata_old,ts),"a"),digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
   else {old<-new
   }
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
 
-NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,sgn=T,pct=T,dig=1){##affiche seulement une valeur annuelle donnee
+NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement une valeur annuelle donnee
   new<-formatC(window(round(charge(rdata,ts),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
     old<-formatC(window(round(charge(rdata_old,ts),digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
   else {old<-new
   }
-  affiche(new,old,sgn,pct)}
+  affiche(new,old,prev=prev)}
