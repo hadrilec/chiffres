@@ -128,8 +128,8 @@ ligne_date<-function()return(paste(
 version<-function(i,i_old=NULL){
   date<-as.Date(file.info(i)$mtime)
   if(!is.null(i_old)){date_o<-as.Date(file.info(i_old)$mtime)
-  paste("**Pour", i, "Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12),"\n","comparees a celles du ",format(date_o,"%d"),months(date_o), format(date_o,"%Y"),substring(file.info(i_old)$mtime,first=12),"**")
-  } else paste("**Pour",i,"Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12),"**")
+  paste("Pour", i, "Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12),"\n","comparees a celles du ",format(date_o,"%d"),months(date_o), format(date_o,"%Y"),substring(file.info(i_old)$mtime,first=12))
+  } else paste("Pour",i,"Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12))
   }
 
 VT<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){

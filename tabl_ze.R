@@ -30,6 +30,7 @@ tabl<-paste("<h1>Zone euro</h1>",version(base),
 base<<-paste(d_int,"ZE_periph.Rdata",sep="//")
 base_old<<-NULL
 
+row15 <-  ligne_date()
 row16<-f_row("PIB belge","ze_periph.pib_vol_be",VT,VA,base,dig=dig)
 row17<-f_row("Importations belges","ze_periph.import_vol_be",VT,VA,base,dig=dig)
 row18<-f_row("Exportations belges","ze_periph.export_vol_be",VT,VA,base,dig=dig)
@@ -38,7 +39,7 @@ row20<-f_row("Importations NL","ze_periph.import_vol_nl",VT,VA,base,dig=dig)
 row21<-f_row("Exportations NL","ze_periph.export_vol_nl",VT,VA,base,dig=dig)
 
 tabl_benl<-paste("<h1>Belgique Pays-Bas</h1>",version(base),
-                 "<table style=\"width:100%\" border=1>",row16,row17,row18,row19,row20,row21,"</table>",sep="")
+                 "<table style=\"width:100%\" border=1>",row15,row16,row17,row18,row19,row20,row21,"</table>",sep="")
 
 
 base_cdm<-paste(d_int,"ZE_CDM.Rdata",sep="//")
