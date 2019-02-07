@@ -30,11 +30,6 @@ row6 <-f_row("Contribution du commerce exterieur","c.solde_d_7ch",NIV,NIV_A,b_fr
 tabl_ext<-paste("<h1>Prevision de croissance des echanges exterieurs</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,"</table>",sep="")
 
 
-tabl2<-gsub("&nbsp;%","",cbind(tabl,tabl_ext))
-tabl3<-gsub("\\+","",tabl2)
-tabl4<-gsub("\\**","",tabl3)
-tabl5<-gsub(">~~","><s>",tabl4)
-tabl6<-gsub("~~","</s>",tabl5)
 #kable(cbind(tabl3,tabl_an3),"html")%>%kable_styling(full_width = T)%>%column_spec(11,border_right = T)%>%add_header_above(c(" ", "Trimestrielles" = 10, "Annuelles" = 3))
-return(tabl6)}
+return(cbind(tabl,tabl_ext))}
 

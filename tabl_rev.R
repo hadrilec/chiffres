@@ -16,10 +16,4 @@ row9 <-f_row("Impots sur le revenu et le patrimoine","d5_s14e_3",VT,VA,b_fr,b_fr
 row10 <-f_row("<b>Prix de la consommation des menages</b>","p3m_d_9ch",VT,VA,b_fr,b_fr_old,dig=dig)
 row11 <-f_row("<b>Pouvoir d'achat du RDB</b>","pardb_men",VT,VA,b_fr,b_fr_old,dig=dig)
 tabl<-paste("<h1>Revenu des menages</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,"</table>",sep="")
-tabl2<-gsub("&nbsp;%","",tabl)
-tabl3<-gsub("\\+","",tabl2)
-tabl4<-gsub("\\**","",tabl3)
-tabl5<-gsub(">~~","><s>",tabl4)
-tabl6<-gsub("~~","</s>",tabl5)
-#kable(cbind(tabl3,tabl_an3),"html")%>%kable_styling(full_width = T)%>%column_spec(11,border_right = T)%>%add_header_above(c(" ", "Trimestrielles" = 10, "Annuelles" = 3))
-return(tabl6)}
+return(tabl)}
