@@ -12,9 +12,9 @@ tabl_pibfr<-function(dig=1){
   row6 <-f_row("Exportations","p6_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
   row7 <-f_row("Importations","p7_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
   row8<-"<tr><td><b>Contributions</b></td></tr>"
-  row9 <-f_row("Demande interieure hors stocks","c.dintfhs_d_7ch",NIV,NIV_A,b_fr,b_fr_old,dig=dig)
-  row10 <-f_row("Variations de stocks","c.p54_d_7ch",NIV,NIV_A,b_fr,b_fr_old,dig=dig)
-  row11 <-f_row("Commerce exterieure","c.solde_d_7ch",NIV,NIV_A,b_fr,b_fr_old,dig=dig)
+  row9 <-f_row("Demande interieure hors stocks","c.dintfhs_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
+  row10 <-f_row("Variations de stocks","c.p54_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
+  row11 <-f_row("Commerce exterieure","c.solde_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
  
   
 tabl<-paste("<h1>Fiche de PIB France</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,"</table>",sep="")

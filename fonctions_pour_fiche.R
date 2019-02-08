@@ -60,6 +60,15 @@ moyenne2<<-function (x, rythme)
   return(s/(hf/bf))
 }
 
+moy_pond<-function(x){
+  return(
+    extraire2(x, 1, 1) + 3 / 4 * extraire2(x, 2, 1) + 1 / 2 * extraire2(x, 3, 1) +
+      1 / 4 * extraire2(x, 4, 1) + 3 / 4 * lag(extraire2(x, 4, 1), -1) + 1 / 2 *
+      lag(extraire2(x, 3, 1), -1) + 1 / 4 * lag(extraire2(x, 2, 1), -1)
+  )
+  
+}
+
 charge<-function(file,acharger=NULL){load(file)
   if (acharger %in% names(series)) return(series[acharger][[1]])
  else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(names(series))),sep=" "))
@@ -219,6 +228,15 @@ NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement u
   
   if(!is.null(rdata_old)){
     old<-formatC(window(round(charge(rdata_old,ts),digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
+  else {old<-new
+  }
+  affiche(new,old,prev=prev)}
+
+MOY_PND<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement une valeur annuelle donnee
+  new<-formatC(window(round(moy_pond(charge(rdata,ts)),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
+  
+  if(!is.null(rdata_old)){
+    old<-formatC(window(round(moy_pond(charge(rdata_old,ts)),digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
   else {old<-new
   }
   affiche(new,old,prev=prev)}
