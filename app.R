@@ -24,7 +24,7 @@ ui <- fluidPage(tabsetPanel(
         selectInput(
           "tableau",
           "Tableau",
-          c("Fiche Production", "Fiche Investissement", "Fiche Revenu","Fiche Echanges exterieurs","Fiche Consommation et investissement des menages","Fiche PIB France"),
+          c("Fiche PIB France","Fiche Production", "Fiche Investissement", "Fiche Revenu","Fiche Echanges exterieurs","Fiche Consommation et investissement des menages"),
           multiple = F,
           selectize = T
         ),
