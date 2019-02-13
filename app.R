@@ -1,99 +1,121 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+##l'application chiffres de la Note a pour objectif de regrouper tous les chiffres de la Note en un seul endroit, garantissant en plus
+##la fraicheur des donnees, toujours synchronisees avec les toutes dernieres sorties
 
 library(shiny)
-library(lubridate)
-# Define UI for application that draws a histogram
-ui <- fluidPage(tabsetPanel(
-  tabPanel(
-    "Fiches France",
-    
-    # Application title
-    titlePanel("Chiffres de la Note"),
-    
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-      sidebarPanel(
-        width = 3,
-        selectInput(
-          "tableau",
-          "Tableau",
-          c("Fiche PIB France","Fiche Production", "Fiche Investissement", "Fiche Revenu","Fiche Echanges exterieurs","Fiche Consommation et investissement des menages"),
-          multiple = F,
-          selectize = T
-        ),
-        uiOutput("liste_gf"),
-        uiOutput("liste_gf_old"),
-        checkboxInput("digi_fr", "Deuxieme decimale")#,
-        #actionButton("export", "Exporter en CSV")#,
-        #submitButton("Feu")
-      ),
+library(lubridate)##necessaire pour faire varier les dates des tableaux automatiquement
+
+
+ui <-
+  fluidPage(tabsetPanel(
+    ##la parite ui correspond a l'interface utilisateur
+    tabPanel(
+      "Fiches France",
       
-      # Show a plot of the generated distribution
-      mainPanel("Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou",htmlOutput("table"))    )
-  ),
-  tabPanel(
-    "Fiches Internationales",titlePanel("Chiffres de la Note"),
-    
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-      sidebarPanel(
-        width = 3,
-        selectInput(
-          "tableau_int",
-          "Tableau",
-          c("Petrole/Marches FI","Fiche Zone euro", "Fiche Espagne", "Fiche Italie","Fiche Allemagne","Fiche US","Fiche Royaume-Uni","Fiche Japon","Economies emergentes"),
-          multiple = F,
-          selectize = T
-        ),checkboxInput("digi", "Deuxieme decimale")),mainPanel("Attention le grisage n'est qu'indicatif",htmlOutput("table_int"))
-   
-  ))))
+      # Application title
+      titlePanel("Chiffres de la Note"),
+      
+      # Sidebar with a slider input for number of bins
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            "tableau",
+            "Tableau",
+            c(
+              "Fiche PIB France",
+              "Fiche Production",
+              "Fiche Investissement",
+              "Fiche Revenu",
+              "Fiche Echanges exterieurs",
+              "Fiche Consommation et investissement des menages",
+              "Emploi et salaires"
+            ),
+            multiple = F,
+            selectize = T
+          ),
+          uiOutput("liste_gf"),
+          ##bouton un peu plus complique que le precedent car il s'adapte aux Rdata presents dans le repertoire
+          uiOutput("liste_gf_old"),
+          checkboxInput("digi_fr", "Deuxieme decimale")#,##a enlever si le respo France ne veut pas devoiler sa tambouille
+          #actionButton("export", "Exporter en CSV")#,##a faire en cas de demande, ou alors bouton impression
+          
+        ),
+        
+        mainPanel(
+          "Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou",
+          htmlOutput("table_fr")
+        )
+      )
+    ),
+    tabPanel(
+      "Fiches Internationales",
+      titlePanel("Chiffres de la Note"),
+      
+      sidebarLayout(
+        sidebarPanel(
+          width = 3,
+          selectInput(
+            "tableau_int",
+            "Tableau",
+            c(
+              "Petrole/Marches FI",
+              "Fiche Zone euro",
+              "Fiche Espagne",
+              "Fiche Italie",
+              "Fiche Allemagne",
+              "Fiche US",
+              "Fiche Royaume-Uni",
+              "Fiche Japon",
+              "Economies emergentes"
+            ),
+            multiple = F,
+            selectize = T
+          ),
+          checkboxInput("digi", "Deuxieme decimale")
+        ),
+        mainPanel(
+          "Attention le grisage n'est qu'indicatif",
+          htmlOutput("table_int")
+        )
+        
+      )
+    )
+  ))
 
 
-# Partial example
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
+
+server <- function(input, output) {##partie serveur (code R)
   
-  
-  
-  ###Les Rdata qui seront utilises dans la fiche
-  
-  d_fr<<-"N:/GDESE/O-GDESE/Special/Special.GFou/Sorties/syntheseGFOU"
-  liste_gf<<-rev(dir(d_fr)[grepl("sortieGFRdata",dir(d_fr))])
-  #d_fr<-NULL
-  #liste_gf<<-rev(tail(dir()[grepl("sortieGFRdata",dir())]))
-  output$liste_gf_old <- renderUI({
-  
-    selectInput(
+  d_fr <<-
+    "N:/GDESE/O-GDESE/Special/Special.GFou/Sorties/syntheseGFOU" #repertoire de sortie pour les Rdata France
+  liste_gf <<-
+    rev(dir(d_fr)[grepl("sortieGFRdata", dir(d_fr))]) #listes des Rdata dans le repertoire ci-dessus
+  output$liste_gf_old <-
+    renderUI({
+      ##creation du bouton des GF a comparer avec la liste_gf ci-dessus
+      selectInput(
         "Gfou_old",
         "Garde-fou a comparer",
         liste_gf,
         multiple = F,
         selectize = T
-      )                                    
-  })
+      )
+    })
   output$liste_gf <- renderUI({
-    
-    selectInput("Gfou", "Garde-fou", liste_gf,
-                multiple=F, selectize=T)
+    ##idem pour le GF de reference
+    selectInput("Gfou",
+                "Garde-fou",
+                liste_gf,
+                multiple = F,
+                selectize = T)
   })
   
   
   
-  options(stringsAsFactors=FALSE)
-  source(file="tabl_prod.R")
-  source(file="tabl_inv.R")
-  source(file="tabl_rev.R")
-  source(file="tabl_comext.R")
-  source(file="tabl_conso.R")
-  source(file="tabl_pibfr.R")
+  options(stringsAsFactors=FALSE)##toujours utile quand on lit des dataframe de chiffres
+  sapply(dir()[grepl("tabl_",dir())],FUN=source)###on source toutes les fonctions avec "tabl_" dans le nom, ce sont toutes les tables
+  #pour en creer de nouvelles il faut donc bien les appeler tabl_qqchose
   ifelse(####choix automatique du dernier trimestre du tableau, si mois de novembre/decembre on change d'annee
     month(Sys.Date() ) %in% 11:12,
     trim <<-
@@ -101,50 +123,28 @@ server <- function(input, output) {
       c(
         year(Sys.Date()), ifelse(month(Sys.Date()) %in% 1:3, 2, 4)
       ))
-  #trim<<-c(2019,2)#dernier trimestre a apparaitre dans le tableau, fait maintenant automatiquement
-  annee<<-trim[1]  ##derniere annee a apparaitre
-  source(file="fonctions_pour_fiche.R")
-  charge<<-function(file,acharger=NULL){load(file)
-    if (acharger %in% rownames(table_noteRch)) return(ts(table_noteRch[acharger,],start=c(as.numeric(substr(names(table_noteRch[acharger,])[1],1,4)),as.numeric(substr(names(table_noteRch[acharger,])[1],6,6))),frequency=4))
-    else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(rownames(table_noteRch))),sep=" "))
-    
-  }
-   output$table <- renderText({
-     b_fr<<-paste(d_fr,input$Gfou,sep="//") 
-     #b_fr<<-input$Gfou
-     b_fr_old<<-paste(d_fr,input$Gfou_old,sep="//")
-     #b_fr_old<<-input$Gfou_old
+  annee<<-trim[1]  ##derniere annee a apparaitre dans le tableau
+  source(file="fonctions_pour_fiche.R")  ##les fonctions utilisees sont toutes regroupees dans ce fichier R
+     output$table_fr <- renderText({##creation du tableau France a afficher
+     b_fr<<-paste(d_fr,input$Gfou,sep="//") ##le chemin plus le nom du Rdata contenant le Gfou selectionne
+     b_fr_old<<-paste(d_fr,input$Gfou_old,sep="//")##le chemin plus le nom du Rdata contenant le Gfou a comparer selectionne
      
-     switch(
+     switch(##selon le choix utilisateur, on lance une fonction donnee, avec le nombre de decimal souhaite
        input$tableau,
        "Fiche Production" = tabl_prod(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Investissement" = tabl_inv(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Revenu" = tabl_rev(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Echanges exterieurs" = tabl_comext(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Consommation et investissement des menages"= tabl_conso(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche PIB France"=tabl_pibfr(dig = ifelse(input$digi_fr, 2, 1))
+       "Fiche PIB France"=tabl_pibfr(dig = ifelse(input$digi_fr, 2, 1)),
+       "Emploi et salaires"=tabl_empl(dig = ifelse(input$digi_fr, 2, 1))
      )
      
    })
    
-  
-   #d_int<<-"U://M-G140//Usuels.dsc//pRev//previsions"
-   d_int<<-"N://GDCJ//N-GDCJ//Echanges.DCJ//DSC//Rdata internationaux"
-   
-   
-   
-   
-   source(file="tabl_ze.R")
-   source(file="tabl_es.R")
-   source(file="tabl_us.R")
-   source(file="tabl_it.R")
-   source(file="tabl_al.R")
-   source(file="tabl_uk.R")
-   source(file="tabl_jp.R")
-   source(file="tabl_em.R")
-   source(file="tabl_fi.R")
-   output$table_int <- renderText({
-    
+   d_int<<-"N://GDCJ//N-GDCJ//Echanges.DCJ//DSC//Rdata internationaux" #chemin des Rdata internationaux
+
+   output$table_int <- renderText({##creation du tableau international a afficher
      switch(
        input$tableau_int,
        "Petrole/Marches FI"=tabl_fi(dig=ifelse(input$digi,2,1)),

@@ -1,16 +1,15 @@
-###fonction qui exporte sous le bon format le graphique (sous format srgg) fait sous R
-evol<<-function (ts, n = 1) 
+evol<<-function (ts, n = 1) ###fonction pour calculer une variation en pourcentage
 {
   return(window(ts/stats::lag(ts, -n) - 1, start = start(ts), end = end(ts), 
                 extend = TRUE))
 }
 
-ga2<-function (ts) 
+ga2<-function (ts) ##fonction pour calcul de glissement annuel
 {
   return(g2(ts, "a"))
 }
 
-g2<-function (ts, rythme) 
+g2<-function (ts, rythme) ##fonction pour glissement en general
 {
   hf <- frequency(ts)
   bf <- switch(rythme, a = 1, s = 2, t = 4)
@@ -20,7 +19,7 @@ g2<-function (ts, rythme)
 }
 
 
-extraire2<-function (x, point, rythme = NULL) 
+extraire2<-function (x, point, rythme = NULL) ##fonction qui extrait un mois (par exemple) d'une serie trimestrielle
 {
   
   hf <- frequency(x)
@@ -45,7 +44,7 @@ extraire2<-function (x, point, rythme = NULL)
   }
   return(window(stats::lag(x, point - 1), frequency = nf, start = start))
 }
-moyenne2<<-function (x, rythme) 
+moyenne2<<-function (x, rythme)  #fonction de moyenne
 {
   hf <- frequency(x)
   bf <- switch(rythme, a = 1, s = 2, t = 4)
@@ -60,7 +59,7 @@ moyenne2<<-function (x, rythme)
   return(s/(hf/bf))
 }
 
-moy_pond<-function(x){
+moy_pond<-function(x){ #fonction de moyenne ponderee speciale pour calculer la contribution annuelle connaissant les contrib trim
   return(
     extraire2(x, 1, 1) + 3 / 4 * extraire2(x, 2, 1) + 1 / 2 * extraire2(x, 3, 1) +
       1 / 4 * extraire2(x, 4, 1) + 3 / 4 * lag(extraire2(x, 4, 1), -1) + 1 / 2 *
@@ -69,31 +68,40 @@ moy_pond<-function(x){
   
 }
 
-charge<-function(file,acharger=NULL){load(file)
+##le probleme c'est que les donnees France ne sont pas sous le format standardise des Rdata internationaux. Ainsi il y a deux
+##fonctions charge, une speciale internationale et une france
+charge_int<-function(file,acharger=NULL){load(file)
   if (acharger %in% names(series)) return(series[acharger][[1]])
  else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(names(series))),sep=" "))
  
 }
 
+charge_fr<-function(file,acharger=NULL){load(file)
+  if (acharger %in% rownames(table_noteRch)) return(ts(table_noteRch[acharger,],start=c(as.numeric(substr(names(table_noteRch[acharger,])[1],1,4)),as.numeric(substr(names(table_noteRch[acharger,])[1],6,6))),frequency=4))
+  else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(rownames(table_noteRch))),sep=" "))
+}
+
+
 ###fonction qui genere des lignes html de tableaux, titre le titre de la ligne, ts la serie a utiliser pour la partie trim,
 #base la base dans laquelle se trouve la ts trim
 #fonc_trim la fonction pour les donnees trim (VT ou NIV par exemple),
 #fonc_an la fonction pour les donnees annuelles (VA ou NIV_A par exemple),
-#ts_an la serie pour les donnees annuelles (seulement si differente de la ts trimestriel comme pour les contributions),
+#ts_an la serie pour les donnees annuelles (seulement si differente de la ts trimestriel comme des fois pour les contributions),
 #base_an la base dans laquelle se trouve ts_an (seulement si differente de la ts trimestriel comme pour les contributions)
+#base_old ou base_an_old sont des bases à comparer
+#bold si on veut la ligne en gras
+#dig nombre de decimales a afficher
 f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,base_an=NULL,base_an_old=NULL,bold=F,dig=1){
   
   if(is.null(ts_an)){ts_an<-ts_trim}
-  if(is.null(base_an)){base_an<-base}
   if(is.null(base_old)){base_old<-base}
+  if(is.null(base_an)){base_an<-base
+  base_an_old<-base_old}
   if(is.null(base_an_old)){base_an_old<-base_an}
- 
-#"<td style=\"border-left: 3px #111111 solid;\">"
-    
-  return(paste(ifelse(bold,"<tr style=\"font-weight:bold\">","<tr>"),
+ return(paste(ifelse(bold,"<tr style=\"font-weight:bold\">","<tr>"),
     "<td>",titre,"</td>",
     paste(c(
-      fonc_trim(base,base_old, ts_trim, -9,dig=dig),
+      fonc_trim(base,base_old, ts_trim, -9,dig=dig),###c'est ici qu'on choisit d'afficher 10 trimestres dans le tableau
       fonc_trim(base,base_old, ts_trim, -8,dig=dig),
       fonc_trim(base,base_old, ts_trim, -7,dig=dig),
       fonc_trim(base,base_old, ts_trim, -6,dig=dig),
@@ -101,9 +109,9 @@ f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,ba
       fonc_trim(base,base_old, ts_trim, -4,dig=dig),
       fonc_trim(base,base_old, ts_trim, -3,dig=dig), 
       fonc_trim(base,base_old, ts_trim, -2,dig=dig),
-      fonc_trim(base,base_old, ts_trim, -1,dig=dig,prev=T),
+      fonc_trim(base,base_old, ts_trim, -1,dig=dig,prev=T),##l'option prev=T permet de griser la cellule, faudrait automatiser dans le futur, mais difficile de transmettre l'info 
       fonc_trim(base,base_old, ts_trim,dig=dig,prev=T),
-      fonc_an(base_an,base_an_old, ts_an, -2,dig=dig),
+      fonc_an(base_an,base_an_old, ts_an, -2,dig=dig),##ici on choisit d'afficher 3 annees
       fonc_an(base_an,base_an_old, ts_an, -1,dig=dig),
       fonc_an(base_an,base_an_old, ts_an,dig=dig,prev=T)), collapse = ""),
     "</tr>",
@@ -112,10 +120,10 @@ f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,ba
   
 }
 
-ligne_date<-function()return(paste(
+ligne_date<-function()return(paste(##fonction qui cree la ligne de date, la premiere
   "<tr><th></th><th>",
   paste(sapply(c(
-    trim[1] + 1 / 4 * trim[2] - 10 / 4,
+    trim[1] + 1 / 4 * trim[2] - 10 / 4,##ici aussi on choisit d'afficher 10 trimestres...
     trim[1] + 1 / 4 * trim[2] - 9 / 4,
     trim[1] + 1 / 4 * trim[2] - 8 / 4,
     trim[1] + 1 / 4 * trim[2] - 7 / 4,
@@ -129,30 +137,21 @@ ligne_date<-function()return(paste(
     paste(substr(x, 3, 4), "T", (x - floor(x)) * 4 + 1, sep = "")), collapse =
     "</th><th>"),
   "</th><th style=\"border-left: 3px #111111 solid;\">",
-  paste(c(annee - 2, annee-1, annee), collapse = "</th><th>"),
+  paste(c(annee - 2, annee-1, annee), collapse = "</th><th>"),##et trois annees
   "</th></tr>",
   sep = ""
 ))
 
-version<-function(i,i_old=NULL){
+version<-function(i,i_old=NULL){##fonction qui affiche les caracteristiques du RData (date de creation) 
   date<-as.Date(file.info(i)$mtime)
   if(!is.null(i_old)){date_o<-as.Date(file.info(i_old)$mtime)
   paste("Pour", i, "Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12),"\n","comparees a celles du ",format(date_o,"%d"),months(date_o), format(date_o,"%Y"),substring(file.info(i_old)$mtime,first=12))
   } else paste("Pour",i,"Donnees du ",format(date,"%d"),months(date), format(date,"%Y"),substring(file.info(i)$mtime,first=12))
   }
 
-VT<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
-  new<-formatC(window(round(evol(charge(rdata,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
-  if(!is.null(rdata_old)){
-  old<-formatC(window(round(evol(charge(rdata_old,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)), format='f', digits=dig )}
-  else {old<-new}
-  # if(sgn==T){if(new>0) {new=abs(new)
-  # old=abs(old)}}
-  affiche(new,old,prev=prev)
-  }
 
 
-affiche <- function(new, old,prev=F)
+affiche <- function(new, old,prev=F)##fonction d'affichage appelée par chaque operateur specifique VT, VA, GA etc.
 {
 
     if (old != new) {
@@ -169,9 +168,19 @@ affiche <- function(new, old,prev=F)
   
 }
 
+VT<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de VT, ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+  new<-formatC(window(round(evol(charge(rdata,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
+  if(!is.null(rdata_old)){
+    old<-formatC(window(round(evol(charge(rdata_old,ts))*100,digits=dig),start=trim+c(0,n),end=trim+c(0,n)), format='f', digits=dig )}
+  else {old<-new}
+  # if(sgn==T){if(new>0) {new=abs(new)
+  # old=abs(old)}}
+  affiche(new,old,prev=prev)
+}
 
 
-VA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
+VA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de VA, ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir de l'annee de reference (variable annee),dig le nombre de decimal, prev si veut griser la case
+
   new<-formatC(window(round(evol(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
@@ -182,7 +191,8 @@ VA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   # old=abs(old)}}
   affiche(new,old,prev=prev)}
 
-GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
+GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de GA, ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+
   freq<-frequency(charge(rdata,ts))
   if(freq==4){pt=trim+c(0,n)}else{pt=n}
   new<-formatC(window(round(ga(charge(rdata,ts))*100,digits=dig),start=pt,end=pt),format='f',digits=dig)
@@ -193,7 +203,8 @@ GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   }
   affiche(new,old,prev=prev)}
 
-GA_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
+GA_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de GA en moyenne annuelle, ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir de l'annee de reference (variable annee),dig le nombre de decimal, prev si veut griser la case
+
 
   new<-formatC(window(round(ga(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
@@ -205,7 +216,8 @@ GA_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
 
 
 
-NIV<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
+NIV<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Juste l'affichage du Niveau,  ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+
   new<-formatC(window(round(charge(rdata,ts),digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
@@ -214,7 +226,8 @@ NIV<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){
   }
   affiche(new,old,prev=prev)}
 
-NIV_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##fait la moyenne d'une grandeur trimestrielle
+NIV_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##L'affichage du Niveau en moyenne annuelle,  ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+
   new<-formatC(window(round(moyenne2(charge(rdata,ts),"a"),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
@@ -223,7 +236,8 @@ NIV_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##fait la moyenne d'un
   }
   affiche(new,old,prev=prev)}
 
-NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement une valeur annuelle donnee
+NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##l'affichage du Niveau d'une ts deja annuelle,  ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir de l'annee de reference (variable annee),dig le nombre de decimal, prev si veut griser la case
+
   new<-formatC(window(round(charge(rdata,ts),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
@@ -232,7 +246,8 @@ NIV_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement u
   }
   affiche(new,old,prev=prev)}
 
-MOY_PND<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##affiche seulement une valeur annuelle donnee
+MOY_PND<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de moyenne ponderee (associe a la fonction moy_pond), ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+
   new<-formatC(window(round(moy_pond(charge(rdata,ts)),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(!is.null(rdata_old)){
