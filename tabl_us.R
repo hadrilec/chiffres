@@ -1,9 +1,5 @@
 tabl_us<-function(dig=1){
-  charge<<-function(file,acharger=NULL){load(file)
-    if (acharger %in% names(series)) return(series[acharger][[1]])
-    else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(names(series))),sep=" "))
-    
-  }
+  charge<<-charge_int
   base<<-paste(d_int,"US.Rdata",sep="//")
   base_an<<-paste(d_int,"US_an.Rdata",sep="//")
   base_old<<-NULL

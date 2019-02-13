@@ -1,9 +1,5 @@
 tabl_conso<-function(dig=1){
-  charge<<-function(file,acharger=NULL){load(file)
-    if (acharger %in% rownames(table_noteRch)) return(ts(table_noteRch[acharger,],start=c(as.numeric(substr(names(table_noteRch[acharger,])[1],1,4)),as.numeric(substr(names(table_noteRch[acharger,])[1],6,6))),frequency=4))
-    else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(rownames(table_noteRch))),sep=" "))
-    
-  }
+  charge<<-charge_fr
   row1 <-  ligne_date()
   row2 <-f_row("Investissement des menages","p51m_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig,bold=T)
   row3 <-"<tr><td><b>Consommation</b></td></tr>"

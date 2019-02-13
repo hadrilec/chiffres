@@ -1,10 +1,14 @@
-tabl_prod<-function(dig=1){
-  charge<<-charge_fr
+tabl_empl<-function(dig=1){
+  charge<<-function(file,acharger=NULL){load(file)
+    if (acharger %in% rownames(table_noteRch)) return(ts(table_noteRch[acharger,],start=c(as.numeric(substr(names(table_noteRch[acharger,])[1],1,4)),as.numeric(substr(names(table_noteRch[acharger,])[1],6,6))),frequency=4))
+    else stop(paste("La serie",acharger,"n'est pas dans le rdata",file,"\n Le rdata contient:",do.call(paste,as.list(rownames(table_noteRch))),sep=" "))
+    
+  }
   
 
 
 row1 <-  ligne_date()
-row2 <-f_row("Agriculture","p1e_az_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
+row2 <-f_row("Emploi","p1e_az_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
 row3 <-f_row("Branches manufacturieres","p1e_dim_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
 row4 <-f_row("Energie, eau, dechets","p1e_de_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
 row5 <-f_row("Construction","p1e_fz_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
