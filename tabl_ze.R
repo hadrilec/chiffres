@@ -41,7 +41,7 @@ tabl_benl<-paste("<h1>Belgique Pays-Bas</h1>",version(base),
 base_cdm<-paste(d_int,"ZE_CDM.Rdata",sep="//")
 
 row1 <-  ligne_date()
-row2 <-f_row("RDB","ze_cdm.rdb_sa",VT,VA,base_cdm,bold=T,dig=dig)
+row2 <-f_row("RDB","ze_cdm.b6g_paid",VT,VA,base_cdm,bold=T,dig=dig)
 row3 <-f_row("Emploi salarié","ze_cdm.emploi_sal",VT,VA,base_cdm,dig=dig)
 row4 <-f_row("Salaires","ze_cdm.smpt",VT,VA,base_cdm,dig=dig)
 row5 <-f_row("Taux d'activité","ze_cdm.tx_activite_sa",NIV,NIV_A,base_cdm,dig=dig)

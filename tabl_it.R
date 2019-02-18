@@ -37,10 +37,11 @@ row11<-f_row("Inflation sous-jacente","it_cdm.td.ipch_sj",GA,GA_A,base_cdm,dig=d
 row12<-f_row("Inflation totale","it_cdm.td.ipch_tot",GA,GA_A,base_cdm,bold=T,dig=dig)
 row13<-f_row("Deflateur de la consommation","it_cdm.td.p3_s145_9",VT,VA,base_cdm,dig=dig)
 row14<-f_row("Taux d'epargne","it_cdm.td.tx_epargne",NIV,NIV_A,base_cdm,bold=T,dig=dig)
+row15<-f_row("Pouvoir d'achat","it_cdm.td.rdb_insee_7",VT,VA,base_cdm,bold=T,dig=dig)
 
 
 tabl_cdm<-paste("<h1>Compte des menages</h1>",version(base_cdm),
-                "<table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,"</table>",sep="")
+                "<table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15,"</table>",sep="")
 
 
 #kable(cbind(tabl3,tabl_an3),"html")%>%kable_styling(full_width = T)%>%column_spec(11,border_right = T)%>%add_header_above(c(" ", "Trimestrielles" = 10, "Annuelles" = 3))

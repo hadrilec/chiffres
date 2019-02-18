@@ -11,7 +11,11 @@ tabl_pibfr<-function(dig=1){
   row9 <-f_row("Demande interieure hors stocks","c.dintfhs_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
   row10 <-f_row("Variations de stocks","c.p54_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
   row11 <-f_row("Commerce exterieur","c.solde_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,dig=dig)
- 
+  row12<-"<tr><td><b>Detail investissement</b></td></tr>"
+  row13 <-f_row("Investissement des ENF","p51s_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
+  row14 <-f_row("Investissement des menages","p51m_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
+  row15 <-f_row("Investissement des APU","p51g_d_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
   
-tabl<-paste("<h1>Fiche de PIB France</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,"</table>",sep="")
+tabl<-paste("<h1>Fiche de PIB France</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15,"</table>",sep="")
 return(tabl)} #%>%formatStyle(3, border = '1px solid #ddd'))}
+
