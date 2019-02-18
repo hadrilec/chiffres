@@ -99,7 +99,7 @@ f_row<-function(titre,ts_trim,fonc_trim,fonc_an,base,base_old=NULL,ts_an=NULL,ba
   base_an_old<-base_old}
   if(is.null(base_an_old)){base_an_old<-base_an}
  return(paste(ifelse(bold,"<tr style=\"font-weight:bold\">","<tr>"),
-    "<td>",titre,"</td>",
+    "<td class=\"titre\">",titre,"</td>",
     paste(c(
       fonc_trim(base,base_old, ts_trim, -9,dig=dig),###c'est ici qu'on choisit d'afficher 10 trimestres dans le tableau
       fonc_trim(base,base_old, ts_trim, -8,dig=dig),
