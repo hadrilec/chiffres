@@ -6,7 +6,7 @@ library(lubridate)##necessaire pour faire varier les dates des tableaux automati
 
 
 ui <-
-  fluidPage(tabsetPanel(
+  fluidPage(theme="style.css",tabsetPanel(
     ##la parite ui correspond a l'interface utilisateur
     tabPanel(
       "Fiches France",
@@ -42,7 +42,7 @@ ui <-
         ),
         
         mainPanel(
-          "Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou",
+          "Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou \n Les calculs de contributions annuelles peuvent varier de 0,1 selon la methode utilisee",
           htmlOutput("table_fr")
         )
       )
