@@ -2,7 +2,7 @@ tabl_empl<-function(dig=1){
   charge<<-charge_fr
   
 row1 <-  ligne_date()
-row2 <-f_row("Emploi salarie SMNA","gf.emps_smna_1",NIV,NIV_AN,b_fr,b_fr_old,dig=dig)
+row2 <-f_row("Emploi salarie SMNA","gf.emps_smna_1",DIFF,DIFF_AN,b_fr,b_fr_old,dig=dig)
 row3 <-f_row("SMPT reel SMNA","gf.smptr_smna_3",VT,VA,b_fr,b_fr_old,dig=dig)
 row4 <-f_row("SMPT SMNA","gf.smpt_smna_3",VT,VA,b_fr,b_fr_old,dig=dig)
 row5 <-f_row("SMPT APU","gf.smpt_s13_3",VT,VA,b_fr,b_fr_old,dig=dig)

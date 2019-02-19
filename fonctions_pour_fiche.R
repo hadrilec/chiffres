@@ -255,3 +255,24 @@ MOY_PND<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de moyenne 
   else {old<-new
   }
   affiche(new,old,prev=prev)}
+
+
+DIFF<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##diffence simple,  ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir du trimestre de reference (variable trim),dig le nombre de decimal, prev si veut griser la case
+  
+  new<-formatC(window(round(diff(charge(rdata,ts)),digits=dig),start=trim+c(0,n),end=trim+c(0,n)),format='f',digits=dig)
+  
+  if(!is.null(rdata_old)){
+    old<-formatC(window(round(diff(charge(rdata_old,ts)),digits=dig),start=trim+c(0,n),end=trim+c(0,n)), format='f', digits=dig )}
+  else {old<-new
+  }
+  affiche(new,old,prev=prev)}
+
+DIFF_AN<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##difference simple en annuel,  ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir de l'annee de reference (variable annee),dig le nombre de decimal, prev si veut griser la case
+  
+  new<-formatC(window(round(diff(moyenne2(charge(rdata,ts),"a")),digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
+  
+  if(!is.null(rdata_old)){
+    old<-formatC(window(round(diff(moyenne2(charge(rdata_old,ts),"a")),digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
+  else {old<-new
+  }
+  affiche(new,old,prev=prev)}
