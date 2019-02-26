@@ -195,10 +195,10 @@ GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de GA, ts la ser
 
   freq<-frequency(charge(rdata,ts))
   if(freq==4){pt=trim+c(0,n)}else{pt=n}
-  new<-formatC(window(round(ga(charge(rdata,ts))*100,digits=dig),start=pt,end=pt),format='f',digits=dig)
+  new<-formatC(window(round(ga2(charge(rdata,ts))*100,digits=dig),start=pt,end=pt),format='f',digits=dig)
   
   if(exists(paste(rdata,"_old",sep=""))){
-  old<-formatC(window(round(ga(charge(rdata_old,ts))*100,digits=dig),start=pt,end=pt), format='f', digits=dig )}
+  old<-formatC(window(round(ga2(charge(rdata_old,ts))*100,digits=dig),start=pt,end=pt), format='f', digits=dig )}
   else {old<-new
   }
   affiche(new,old,prev=prev)}
@@ -206,10 +206,10 @@ GA<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de GA, ts la ser
 GA_A<-function(rdata,rdata_old=NULL,ts,n=0,dig=1,prev=F){##Calcul de GA en moyenne annuelle, ts la serie temp, rdata sa base (eventuellement a comparer a rdata_old), n est le décalage a partir de l'annee de reference (variable annee),dig le nombre de decimal, prev si veut griser la case
 
 
-  new<-formatC(window(round(ga(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
+  new<-formatC(window(round(ga2(moyenne2(charge(rdata,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n),format='f',digits=dig)
   
   if(exists(paste(rdata,"_old",sep=""))){
-    old<-formatC(window(round(ga(moyenne2(charge(rdata_old,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
+    old<-formatC(window(round(ga2(moyenne2(charge(rdata_old,ts),"a"))*100,digits=dig),start=annee+n,end=annee+n), format='f', digits=dig )}
   else {old<-new
   }
   affiche(new,old,prev=prev)}
