@@ -58,7 +58,7 @@ ui <-
             "tableau_int",
             "Tableau",
             c(
-              "Petrole/Marches FI",
+              "Petrole/Marches FI/Synthese",
               "Fiche Zone euro",
               "Fiche Espagne",
               "Fiche Italie",
@@ -70,7 +70,7 @@ ui <-
             ),
             multiple = F,
             selectize = T
-          ),
+          ),uiOutput("liste_int"),uiOutput("liste_int_old"),
           checkboxInput("digi", "Deuxieme decimale")
         ),
         mainPanel(
@@ -110,8 +110,56 @@ server <- function(input, output) {##partie serveur (code R)
                 multiple = F,
                 selectize = T)
   })
+  d_int<<-"N://GDCJ//N-GDCJ//Echanges.DCJ//DSC//Rdata internationaux" #chemin des Rdata internationaux
+
+    
+    output$liste_int <- renderUI({
+        pays <- switch(
+          input$tableau_int,
+          "Petrole/Marches FI/Synthese" = "OIL",
+          "Fiche Zone euro" = "ZE",
+          "Fiche Espagne" = "ES",
+          "Fiche US" = "US",
+          "Fiche Italie" = "IT",
+          "Fiche Allemagne" = "AL",
+          "Fiche Royaume-Uni" = "UK",
+          "Fiche Japon" = "JP",
+          "Economies emergentes" = "EM"
+        )
+        liste_int <<-
+          rev(dir(d_int)[grepl(pays, dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus   
+      
+      ##idem pour le GF de reference
+      selectInput("data_int",
+                  "Sortie",
+                  liste_int,
+                  multiple = F,
+                  selectize = T)
+    })
   
-  
+    output$liste_int_old <- renderUI({
+      pays <- switch(
+        input$tableau_int,
+        "Petrole/Marches FI/Synthese" = "OIL",
+        "Fiche Zone euro" = "ZE",
+        "Fiche Espagne" = "ES",
+        "Fiche US" = "US",
+        "Fiche Italie" = "IT",
+        "Fiche Allemagne" = "AL",
+        "Fiche Royaume-Uni" = "UK",
+        "Fiche Japon" = "JP",
+        "Economies emergentes" = "EM"
+      )
+      liste_int_old <<-
+        rev(dir(d_int)[grepl(pays, dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus   
+      
+      ##idem pour le GF de reference
+      selectInput("data_int_old",
+                  "Sortie a comparer",
+                  liste_int_old,
+                  multiple = F,
+                  selectize = T)
+    })
   
   options(stringsAsFactors=FALSE)##toujours utile quand on lit des dataframe de chiffres
   sapply(dir()[grepl("tabl_",dir())],FUN=source)###on source toutes les fonctions avec "tabl_" dans le nom, ce sont toutes les tables
@@ -129,7 +177,7 @@ server <- function(input, output) {##partie serveur (code R)
      b_fr<<-paste(d_fr,input$Gfou,sep="//") ##le chemin plus le nom du Rdata contenant le Gfou selectionne
      b_fr_old<<-paste(d_fr,input$Gfou_old,sep="//")##le chemin plus le nom du Rdata contenant le Gfou a comparer selectionne
      
-     switch(##selon le choix utilisateur, on lance une fonction donnee, avec le nombre de decimal souhaite
+     switch(##selon le choix utilisateur, on lance une fonction donnee, avec le nombre de decimales souhaite
        input$tableau,
        "Fiche Production" = tabl_prod(dig = ifelse(input$digi_fr, 2, 1)),
        "Fiche Investissement" = tabl_inv(dig = ifelse(input$digi_fr, 2, 1)),
@@ -142,12 +190,15 @@ server <- function(input, output) {##partie serveur (code R)
      
    })
    
-   d_int<<-"N://GDCJ//N-GDCJ//Echanges.DCJ//DSC//Rdata internationaux" #chemin des Rdata internationaux
+   
 
    output$table_int <- renderText({##creation du tableau international a afficher
+     b_int<<-paste(d_int,input$data_int,sep="//") ##le chemin plus le nom du Rdata contenant le Gfou selectionne
+     b_int_old<<-paste(d_int,input$data_int_old,sep="//")##le chemin plus le nom du Rdata contenant le Gfou a comparer selectionne
+     
      switch(
        input$tableau_int,
-       "Petrole/Marches FI"=tabl_fi(dig=ifelse(input$digi,2,1)),
+       "Petrole/Marches FI/Synthese"=tabl_fi(dig=ifelse(input$digi,2,1)),
        "Fiche Zone euro" = tabl_ze(dig=ifelse(input$digi,2,1)),
        "Fiche Espagne" = tabl_es(dig=ifelse(input$digi,2,1)),
        "Fiche US" = tabl_us(dig=ifelse(input$digi,2,1)),
