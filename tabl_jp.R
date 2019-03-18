@@ -23,7 +23,7 @@ tabl_jp<-function(dig=1){
               "<table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,row8,row9,row10,row11,row12,row13,row14,row15,"</table>",sep="")
   
   row1 <-  ligne_date()
-  row2 <-f_row("RDB","jp.conso_rdb_cvs",VT,VA,base,bold=T,dig=dig)
+  row2 <-f_row("RDB","jp.rdb_v_sa",VT,VA,base,bold=T,dig=dig)
   row3 <-f_row("Emploi salarie","jp.emp_salarie_q",VT,VA,base,dig=dig)
   row4 <-f_row("Salaires nominaux","jp.smpt_q",VT,VA,base,dig=dig)
   row5 <-f_row("Population active","jp.popactive_q",VT,VA,base,dig=dig)
