@@ -6,15 +6,10 @@ library(lubridate)##necessaire pour faire varier les dates des tableaux automati
 
 
 ui <-
-  fluidPage(theme="style.css",tabsetPanel(
-    ##la parite ui correspond a l'interface utilisateur
+  fluidPage(theme="style.css",titlePanel("Chiffres de la Note"),tabsetPanel(
+    ##la partie ui correspond a l'interface utilisateur
     tabPanel(
-      "Fiches France",
-      
-      # Application title
-      titlePanel("Chiffres de la Note"),
-      
-      # Sidebar with a slider input for number of bins
+      "France",
       sidebarLayout(
         sidebarPanel(
           width = 3,
@@ -22,12 +17,12 @@ ui <-
             "tableau",
             "Tableau",
             c(
-              "Fiche PIB France",
-              "Fiche Production",
-              "Fiche Investissement",
-              "Fiche Revenu",
-              "Fiche Echanges exterieurs",
-              "Fiche Consommation et investissement des menages",
+              "PIB France",
+              "Production",
+              "Investissement",
+              "Revenu",
+              "Echanges exterieurs",
+              "Consommation et investissement des menages",
               "Emploi et salaires"
             ),
             multiple = F,
@@ -42,14 +37,14 @@ ui <-
         ),
         
         mainPanel(
-          "Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a O://Special/Special.GFou \n Les calculs de contributions annuelles peuvent varier de 0,1 selon la methode utilisee",
+          "Attention le grisage n'est qu'indicatif et seules les donnees dans les sorties du garde-fou apparaissent. Si rien n'apparait vous n'avez pas acces a N:/GDESE/O-GDESE/Special/Special.GFou. \n Les calculs de contributions annuelles peuvent varier de 0,1 selon la methode utilisee",
           htmlOutput("table_fr")
         )
       )
     ),
     tabPanel(
-      "Fiches Internationales",
-      titlePanel("Chiffres de la Note"),
+      "International",
+      
       
       sidebarLayout(
         sidebarPanel(
@@ -58,15 +53,21 @@ ui <-
             "tableau_int",
             "Tableau",
             c(
-              "Petrole/Marches FI/Synthese",
-              "Fiche Zone euro",
-              "Fiche Espagne",
-              "Fiche Italie",
-              "Fiche Allemagne",
-              "Fiche US",
-              "Fiche Royaume-Uni",
-              "Fiche Japon",
-              "Economies emergentes"
+              "Petrole",
+              "Taux de change",
+              "Commerce mondial",
+              "Zone euro",
+              "Belgique Pays-Bas",
+              "Espagne",
+              "Italie",
+              "Allemagne",
+              "US",
+              "Royaume-Uni",
+              "Japon",
+              "Chine",
+              "Economies emergentes",
+              "Taux souverains europeens",
+              "Synthese"
             ),
             multiple = F,
             selectize = T
@@ -86,9 +87,10 @@ ui <-
 
 
 server <- function(input, output) {##partie serveur (code R)
+  options(encoding="UTF-8")
   
-  d_fr <<-
-    "N:/GDESE/O-GDESE/Special/Special.GFou/Sorties/syntheseGFOU" #repertoire de sortie pour les Rdata France
+  d_fr <<-"N:/GDESE/O-GDESE/Special/Special.GFou/Sorties/SyntheseGFOU"
+ #repertoire de sortie pour les Rdata France
   liste_gf <<-
     rev(dir(d_fr)[grepl("sortieGFRdata", dir(d_fr))]) #listes des Rdata dans le repertoire ci-dessus
   output$liste_gf_old <-
@@ -110,24 +112,32 @@ server <- function(input, output) {##partie serveur (code R)
                 multiple = F,
                 selectize = T)
   })
-  d_int<<-"N://GDCJ//N-GDCJ//Echanges.DCJ//DSC//Rdata internationaux" #chemin des Rdata internationaux
+  d_int<<-"N:/GDCJ/N-GDCJ/Echanges.DCJ/DSC/Rdata internationaux" #chemin des Rdata internationaux
 
     
     output$liste_int <- renderUI({
         pays <- switch(
           input$tableau_int,
-          "Petrole/Marches FI/Synthese" = "OIL",
-          "Fiche Zone euro" = "ZE",
-          "Fiche Espagne" = "ES",
-          "Fiche US" = "US",
-          "Fiche Italie" = "IT",
-          "Fiche Allemagne" = "AL",
-          "Fiche Royaume-Uni" = "UK",
-          "Fiche Japon" = "JP",
-          "Economies emergentes" = "EM"
+          "Petrole"="OIL",
+          "Taux de change" = "FI.change",
+          "Commerce mondial" = "DM",
+          "Zone euro" = "ZE",
+          "Belgique Pays-Bas"="BENL",
+          "Espagne" = "ES",
+          "US" = "US",
+          "Italie" = "IT",
+          "Allemagne" = "AL",
+          "Royaume-Uni" = "UK",
+          "Japon" = "JP",
+          "Chine" = "CN",
+          "Economies emergentes" = "EM",
+          "Taux souverains europeens" = "FItaux",
+          "Synthese"="SYN"
         )
         liste_int <<-
-          rev(dir(d_int)[grepl(pays, dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus   
+          rev(dir(d_int)[grepl(paste0(pays,"[0-9]"), dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus
+        #dont le nom correspond a la variable pays. Ainsi si on choisit Zone euro, seuls les Rdata avec ZE vont 
+        #etre selectionnes
       
       ##idem pour le GF de reference
       selectInput("data_int",
@@ -140,18 +150,24 @@ server <- function(input, output) {##partie serveur (code R)
     output$liste_int_old <- renderUI({
       pays <- switch(
         input$tableau_int,
-        "Petrole/Marches FI/Synthese" = "OIL",
-        "Fiche Zone euro" = "ZE",
-        "Fiche Espagne" = "ES",
-        "Fiche US" = "US",
-        "Fiche Italie" = "IT",
-        "Fiche Allemagne" = "AL",
-        "Fiche Royaume-Uni" = "UK",
-        "Fiche Japon" = "JP",
-        "Economies emergentes" = "EM"
+        "Petrole"="OIL",
+        "Taux de change" = "FI.change",
+        "Commerce mondial" = "DM",
+        "Zone euro" = "ZE",
+        "Belgique Pays-Bas"="BENL",
+        "Espagne" = "ES",
+        "US" = "US",
+        "Italie" = "IT",
+        "Allemagne" = "AL",
+        "Royaume-Uni" = "UK",
+        "Japon" = "JP",
+        "Chine" = "CN",
+        "Economies emergentes" = "EM",
+        "Taux souverains europeens" = "FItaux",
+        "Synthese"="SYN"
       )
       liste_int_old <<-
-        rev(dir(d_int)[grepl(pays, dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus   
+        rev(dir(d_int)[grepl(paste0(pays,"[0-9]"), dir(d_int))]) #listes des Rdata dans le repertoire ci-dessus qui ont bien un chiffre juste apres le nom (pour faire la difference entre FI2019 et FI.change2019)  
       
       ##idem pour le GF de reference
       selectInput("data_int_old",
@@ -174,17 +190,19 @@ server <- function(input, output) {##partie serveur (code R)
   annee<<-trim[1]  ##derniere annee a apparaitre dans le tableau
   source(file="fonctions_pour_fiche.R")  ##les fonctions utilisees sont toutes regroupees dans ce fichier R
      output$table_fr <- renderText({##creation du tableau France a afficher
+       req(input$Gfou)#pour ne pas qu'il indique une erreur le temps qu'il cree les boutons
+       req(input$Gfou_old)
      b_fr<<-paste(d_fr,input$Gfou,sep="//") ##le chemin plus le nom du Rdata contenant le Gfou selectionne
      b_fr_old<<-paste(d_fr,input$Gfou_old,sep="//")##le chemin plus le nom du Rdata contenant le Gfou a comparer selectionne
      
      switch(##selon le choix utilisateur, on lance une fonction donnee, avec le nombre de decimales souhaite
        input$tableau,
-       "Fiche Production" = tabl_prod(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche Investissement" = tabl_inv(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche Revenu" = tabl_rev(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche Echanges exterieurs" = tabl_comext(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche Consommation et investissement des menages"= tabl_conso(dig = ifelse(input$digi_fr, 2, 1)),
-       "Fiche PIB France"=tabl_pibfr(dig = ifelse(input$digi_fr, 2, 1)),
+       "Production" = tabl_prod(dig = ifelse(input$digi_fr, 2, 1)),
+       "Investissement" = tabl_inv(dig = ifelse(input$digi_fr, 2, 1)),
+       "Revenu" = tabl_rev(dig = ifelse(input$digi_fr, 2, 1)),
+       "Echanges exterieurs" = tabl_comext(dig = ifelse(input$digi_fr, 2, 1)),
+       "Consommation et investissement des menages"= tabl_conso(dig = ifelse(input$digi_fr, 2, 1)),
+       "PIB France"=tabl_pibfr(dig = ifelse(input$digi_fr, 2, 1)),
        "Emploi et salaires"=tabl_empl(dig = ifelse(input$digi_fr, 2, 1))
      )
      
@@ -193,21 +211,48 @@ server <- function(input, output) {##partie serveur (code R)
    
 
    output$table_int <- renderText({##creation du tableau international a afficher
+     req(input$data_int)
+     req(input$data_int_old)
+     req(input$tableau_int)
      b_int<<-paste(d_int,input$data_int,sep="//") ##le chemin plus le nom du Rdata contenant le Gfou selectionne
      b_int_old<<-paste(d_int,input$data_int_old,sep="//")##le chemin plus le nom du Rdata contenant le Gfou a comparer selectionne
-     
+     pays <- switch(
+       input$tableau_int,
+       "Petrole"="OIL",
+       "Taux de change" = "FI.change",
+       "Commerce mondial" = "DM",
+       "Zone euro" = "ZE",
+       "Belgique Pays-Bas"="BENL",
+       "Espagne" = "ES",
+       "US" = "US",
+       "Italie" = "IT",
+       "Allemagne" = "AL",
+       "Royaume-Uni" = "UK",
+       "Japon" = "JP",
+       "Chine" = "CN",
+       "Economies emergentes" = "EM",
+       "Taux souverains europeens" = "FItaux",
+       "Synthese"="SYN"
+     )
+     if(grepl(pays,b_int)){##la condition est la uniquement pour empecher l'affichage temporaire d'une erreur
      switch(
        input$tableau_int,
-       "Petrole/Marches FI/Synthese"=tabl_fi(dig=ifelse(input$digi,2,1)),
-       "Fiche Zone euro" = tabl_ze(dig=ifelse(input$digi,2,1)),
-       "Fiche Espagne" = tabl_es(dig=ifelse(input$digi,2,1)),
-       "Fiche US" = tabl_us(dig=ifelse(input$digi,2,1)),
-       "Fiche Italie" = tabl_it(dig=ifelse(input$digi,2,1)),
-       "Fiche Allemagne" = tabl_al(dig=ifelse(input$digi,2,1)),
-       "Fiche Royaume-Uni"=tabl_uk(dig=ifelse(input$digi,2,1)),
-       "Fiche Japon"=tabl_jp(dig=ifelse(input$digi,2,1)),
-       "Economies emergentes"=tabl_em(dig=ifelse(input$digi,2,1))
-     )
+       "Petrole"=tabl_oil(dig=ifelse(input$digi,2,1)),
+       "Taux de change"=tabl_fi(dig=ifelse(input$digi,2,1)),
+       "Commerce mondial" = tabl_dm(dig=ifelse(input$digi,2,1)),
+       "Zone euro" = tabl_ze(dig=ifelse(input$digi,2,1)),
+       "Belgique Pays-Bas" = tabl_benl(dig=ifelse(input$digi,2,1)),
+       "Espagne" = tabl_es(dig=ifelse(input$digi,2,1)),
+       "US" = tabl_us(dig=ifelse(input$digi,2,1)),
+       "Italie" = tabl_it(dig=ifelse(input$digi,2,1)),
+       "Allemagne" = tabl_al(dig=ifelse(input$digi,2,1)),
+       "Royaume-Uni"=tabl_uk(dig=ifelse(input$digi,2,1)),
+       "Japon"=tabl_jp(dig=ifelse(input$digi,2,1)),
+       "Chine" = tabl_cn(dig=ifelse(input$digi,2,1)),
+       "Economies emergentes"=tabl_em(dig=ifelse(input$digi,2,1)),
+       "Taux souverains europeens" = tabl_fitaux(dig=ifelse(input$digi,2,1)),
+       "Synthese" = tabl_syn(dig=ifelse(input$digi,2,1))
+     )}
      
    })  
    

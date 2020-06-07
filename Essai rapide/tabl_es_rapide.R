@@ -3,11 +3,11 @@ tabl_es<-function(){
   rdata_an<-"ES_an"
   load(paste(d_int,"//",rdata_an,".Rdata",sep="")) 
   series_an<-series
-  base_old<-NULL
-  base_an_old<-NULL
-  if(!is.null(base_old)){load(base_old)
+  b_int_old<-NULL
+  b_int_an_old<-NULL
+  if(!is.null(b_int_old)){load(b_int_old)
     series_old<-series}
-  if(!is.null(base_an_old)){load(base_an_old)
+  if(!is.null(b_int_an_old)){load(b_int_an_old)
     series_an_old<-series}
   load(paste(d_int,"//",rdata,".Rdata",sep=""))
   
@@ -26,11 +26,11 @@ row10 <-f_row("Commerce exterieur","es.comext.contrib",NIV,NIV_AN,"es_an.comext.
 tabl<-paste("<h1>Espagne</h1>",version(paste(d_int,"//",rdata,".Rdata",sep="")),
               "<table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,row7,"<tr><td><b>Contributions</b></td></tr>",row8,row9,row10,"</table>",sep="")
 rdata<-"ES_CDM"
-base_old<-NULL
-base_an_old<-NULL
-if(!is.null(base_old)){load(base_old)
+b_int_old<-NULL
+b_int_an_old<-NULL
+if(!is.null(b_int_old)){load(b_int_old)
   series_old<-series}
-if(!is.null(base_an_old)){load(base_an_old)
+if(!is.null(b_int_an_old)){load(b_int_an_old)
   series_an_old<-series}
 load(paste(d_int,"//",rdata,".Rdata",sep=""))
 

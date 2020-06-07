@@ -1,27 +1,15 @@
 tabl_comext<-function(dig=1){
-  charge<<-charge_int
-  base<-paste(d_int,"DM.Rdata",sep="//")
-  base_old<-NULL
-
-
-row1 <-  ligne_date()
-row2 <-f_row("Commerce mondial","dm_monde",VT,VA,base,dig=dig)
-row3 <-f_row("Importations des economies avancees","m_av",VT,VA,base,dig=dig)
-row4 <-f_row("Importations des economies emergentes","m_em",VT,VA,base,dig=dig)
-row5 <-f_row("Demande mondiale adressee a la France","dm_france",VT,VA,base,dig=dig)
-
-tabl<-paste("<h1>Commerce mondial et demande adressee a la France</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,"</table>",sep="")
 charge<<-charge_fr
-row1 <-  ligne_date()
-row2 <-f_row("Exportations","p6_d_7ch",VT,VA,b_fr,b_fr_old,bold=T,dig=dig)
-row3 <-f_row("dont Produits manufactures","p6_dim_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
-row4 <-f_row("Importations","p7_d_7ch",VT,VA,b_fr,b_fr_old,bold=T,dig=dig)
-row5 <-f_row("dont Produits manufactures","p7_dim_7ch",VT,VA,b_fr,b_fr_old,dig=dig)
-row6 <-f_row("Contribution du commerce exterieur","c.solde_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,bold=T,dig=dig)
+return(paste(
+  "<h1>Prevision de croissance des echanges exterieurs</h1>",
+  "Pour le commerce mondiale et la demande adressee voir la page dediee dans les fiches internationales",
+  "<table style=\"width:100%\" border=1>",
+  ligne_date(),
+  f_row("Exportations","p6_d_7ch",VT,VA,b_fr,b_fr_old,bold=T,dig=dig),
+  f_row("dont Produits manufactures","p6_dim_7ch",VT,VA,b_fr,b_fr_old,dig=dig),
+  f_row("Importations","p7_d_7ch",VT,VA,b_fr,b_fr_old,bold=T,dig=dig),
+  f_row("dont Produits manufactures","p7_dim_7ch",VT,VA,b_fr,b_fr_old,dig=dig),
+  f_row("Contribution du commerce exterieur","c.solde_d_7ch",NIV,MOY_PND,b_fr,b_fr_old,bold=T,dig=dig),
+  "</table>",sep=""))}
 
-tabl_ext<-paste("<h1>Prevision de croissance des echanges exterieurs</h1><table style=\"width:100%\" border=1>",row1,row2,row3,row4,row5,row6,"</table>",sep="")
-
-
-#kable(cbind(tabl3,tabl_an3),"html")%>%kable_styling(full_width = T)%>%column_spec(11,border_right = T)%>%add_header_above(c(" ", "Trimestrielles" = 10, "Annuelles" = 3))
-return(cbind(tabl,tabl_ext))}
 
