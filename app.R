@@ -4,6 +4,7 @@
 library(shiny)
 library(lubridate)##necessaire pour faire varier les dates des tableaux automatiquement
 
+# EJO
 
 ui <-
   fluidPage(theme="style.css",titlePanel("Chiffres de la Note"),tabsetPanel(
@@ -116,6 +117,8 @@ server <- function(input, output) {##partie serveur (code R)
 
     
     output$liste_int <- renderUI({
+      print("coucou")
+      print(input$tableau_int)
         pays <- switch(
           input$tableau_int,
           "Petrole"="OIL",
