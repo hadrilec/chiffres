@@ -5,6 +5,7 @@ library(shiny)
 library(lubridate)##necessaire pour faire varier les dates des tableaux automatiquement
 
 # EJO
+#d
 
 ui <-
   fluidPage(theme="style.css",titlePanel("Chiffres de la Note"),tabsetPanel(
